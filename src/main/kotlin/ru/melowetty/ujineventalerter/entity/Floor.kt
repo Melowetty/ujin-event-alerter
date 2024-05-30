@@ -14,6 +14,6 @@ data class Floor(
     @ManyToOne(cascade = [CascadeType.REMOVE])
     @OnDelete(action = OnDeleteAction.CASCADE)
     val building: Building,
-    val name: String,
+    val name: String?,
     val number: Int,
 )
