@@ -2,8 +2,9 @@ package ru.melowetty.ujineventalerter.dto
 
 data class CameraShortDto(
     val id: Long,
-    val x: Long,
-    val y: Long,
+    val x: Float,
+    val y: Float,
     val floorNumber: Int,
-    val floorId: Int,
+    val floorId: Long,
+    val name: String,
 )

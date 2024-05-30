@@ -8,4 +8,6 @@ data class CameraConnectRequest(
     val floorId: Long,
     @NotBlank
     val externalId: String,
+    val x: Float,
+    val y: Float,
 )

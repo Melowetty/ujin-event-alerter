@@ -1,12 +1,7 @@
 package ru.melowetty.ujineventalerter.controller
 
 import jakarta.validation.Valid
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import ru.melowetty.ujineventalerter.controller.request.CameraConnectRequest
 import ru.melowetty.ujineventalerter.dto.CameraShortDto
 import ru.melowetty.ujineventalerter.model.AvailableCamera
@@ -32,6 +27,13 @@ class CameraController(
         return cameraService.connectCamera(
             floorId = cameraConnectRequest.floorId,
             externalId = cameraConnectRequest.externalId,
+            x = cameraConnectRequest.x,
+            y = cameraConnectRequest.y
         )
+    }
+
+    @DeleteMapping("{cameraId}")
+    fun disconnectCamera(@PathVariable cameraId: Long) {
+        cameraService.disconnectCamera(cameraId)
     }
 }
