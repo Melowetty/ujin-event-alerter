@@ -7,11 +7,12 @@ import org.hibernate.annotations.OnDeleteAction
 @Entity
 data class Camera(
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long,
     val externalId: Long,
     val x: Float,
     val y: Float,
-    @ManyToOne(cascade = [CascadeType.REMOVE])
+    @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     val floor: Floor
 )

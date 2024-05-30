@@ -11,6 +11,7 @@ class BuildingMapper {
             id = building.id,
             name = building.name,
             location = building.location,
+            externalId = building.externalId,
         )
     }
 }

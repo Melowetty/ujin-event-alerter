@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 @Entity
 data class Event(
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long,
     val externalId: Long,
     @ManyToOne(cascade = [CascadeType.REMOVE])

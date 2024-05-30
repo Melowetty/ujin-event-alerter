@@ -24,13 +24,14 @@ class FloorServiceImpl(
         return toDto(floorRepository.findById(floorId).orElseThrow { throw EntityNotFoundException("Такой этаж не найден!") })
     }
 
-    override fun createFloor(buildingId: Long, number: Int, name: String?): FloorDto {
+    override fun createFloor(buildingId: Long, number: Int, name: String?, isOutside: Boolean): FloorDto {
         val building = buildingRepository.findById(buildingId).orElseThrow { throw EntityNotFoundException("Такое здание не найдено!") }
         val floor = Floor(
             id = 0L,
             name = name,
             number = number,
             building = building,
+            isOutside = isOutside,
         )
         val created = floorRepository.save(floor)
         return toDto(created)
@@ -42,6 +43,7 @@ class FloorServiceImpl(
             number = floor.number,
             building = buildingMapper.toDto(floor.building),
             name = floor.name,
+            isOutside = floor.isOutside,
         )
     }
 
@@ -51,6 +53,7 @@ class FloorServiceImpl(
             buildingId = floor.building.id,
             name = floor.name,
             number = floor.number,
+            isOutside = floor.isOutside,
         )
     }
 }

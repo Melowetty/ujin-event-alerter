@@ -5,4 +5,5 @@ data class FloorDto(
     val name: String?,
     val number: Int,
     val building: BuildingDto,
+    val isOutside: Boolean,
 )
