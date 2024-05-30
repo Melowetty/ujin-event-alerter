@@ -13,6 +13,7 @@ import ru.melowetty.ujineventalerter.model.UjinBuilding
 import ru.melowetty.ujineventalerter.service.UjinApiService
 import ru.melowetty.ujineventalerter.service.impl.response.UjinAuthResponse
 import ru.melowetty.ujineventalerter.service.impl.response.UjinBuildingsResponse
+import ru.melowetty.ujineventalerter.service.impl.response.UjinTopicCreateResponse
 
 @Service
 class UjinApiServiceImpl(
@@ -51,8 +52,31 @@ class UjinApiServiceImpl(
         }
     }
 
-    override fun createIncident() {
-        TODO("Not yet implemented")
+    override fun createIncident(title: String, description: String) {
+        // todo происходит ошибка при запросе, необходимо протестировать в постмане
+        val restTemplate = RestTemplate()
+
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.APPLICATION_JSON
+        headers.accept = listOf(MediaType.APPLICATION_JSON)
+
+        val url = "$BASE_UJIN_URL/v1/tck/bms/tickets/create/"
+
+        val requestBody = mapOf(
+            "title" to title,
+            "description" to description,
+            "priority" to "high",
+            "class" to "default (auto)",
+            "status" to "new"
+        )
+
+        val entity = HttpEntity(requestBody, headers)
+
+        //val response = restTemplate.exchange(url, HttpMethod.POST, entity, UjinTopicCreateResponse::class.java)
+//        if(response.body!!.error == 1) {
+//            token = auth()
+//            createIncident(title, description)
+//        }
     }
 
     private fun auth(): String {
@@ -63,8 +87,10 @@ class UjinApiServiceImpl(
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
         val url = "$BASE_UJIN_URL/v1/auth/crm/authenticate"
-
-        val requestBody = "{\"login\": \"$UJIN_LOGIN\", \"password\": \"$UJIN_PASSWORD\"}"
+        val requestBody = mapOf(
+            "login" to UJIN_LOGIN,
+            "password" to UJIN_PASSWORD
+        )
 
         val entity = HttpEntity(requestBody, headers)
 

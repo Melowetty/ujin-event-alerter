@@ -4,5 +4,5 @@ import ru.melowetty.ujineventalerter.model.UjinBuilding
 
 interface UjinApiService {
     fun getBuildings(): List<UjinBuilding>
-    fun createIncident()
+    fun createIncident(title: String, description: String)
 }
