@@ -8,4 +8,5 @@ data class Building(
     @Id
     val id: Long,
     val name: String,
+    val location: String
 )
