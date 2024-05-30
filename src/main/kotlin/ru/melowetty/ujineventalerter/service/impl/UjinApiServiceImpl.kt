@@ -8,12 +8,10 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.exchange
 import ru.melowetty.ujineventalerter.model.UjinBuilding
 import ru.melowetty.ujineventalerter.service.UjinApiService
 import ru.melowetty.ujineventalerter.service.impl.response.UjinAuthResponse
 import ru.melowetty.ujineventalerter.service.impl.response.UjinBuildingsResponse
-import ru.melowetty.ujineventalerter.service.impl.response.UjinTopicCreateResponse
 
 @Service
 class UjinApiServiceImpl(
@@ -33,7 +31,7 @@ class UjinApiServiceImpl(
         headers.contentType = MediaType.APPLICATION_JSON
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
-        val entity = HttpEntity(headers, null)
+        val entity = HttpEntity(headers, headers)
 
         val response = restTemplate.exchange(url, HttpMethod.GET, entity, UjinBuildingsResponse::class.java).body!!
 
