@@ -85,7 +85,7 @@ class MacroscopApiServiceImpl(
                 baos.write(buffer, 0, read)
             }
             baos.flush()
-            return Base64.encode(baos.toByteArray())
+            return "data:image/jpeg;base64," + Base64.encode(baos.toByteArray())
         } catch (_: Exception) {
 
         }
