@@ -64,8 +64,6 @@ class CameraServiceImpl(
             id = camera.id,
             x = camera.x,
             y = camera.y,
-            floorNumber = camera.floor.number,
-            floorId = camera.floor.id,
             name = camera.name,
         )
     }

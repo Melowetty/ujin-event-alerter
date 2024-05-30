@@ -1,8 +1,11 @@
 package ru.melowetty.ujineventalerter.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.Fetch
 import org.hibernate.annotations.OnDelete
 import org.hibernate.annotations.OnDeleteAction
+import org.hibernate.annotations.Type
+import org.springframework.web.bind.annotation.Mapping
 
 @Entity
 data class Floor(
@@ -15,4 +18,7 @@ data class Floor(
     val name: String?,
     val number: Int,
     val isOutside: Boolean = false,
+    @Mapping
+    @OneToMany(fetch = FetchType.LAZY)
+    val cameras: List<Camera>
 )

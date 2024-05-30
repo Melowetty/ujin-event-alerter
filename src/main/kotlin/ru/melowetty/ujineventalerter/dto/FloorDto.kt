@@ -6,4 +6,6 @@ data class FloorDto(
     val number: Int,
     val building: BuildingDto,
     val isOutside: Boolean,
+    val planBase64: String,
+    val cameras: List<CameraShortDto>
 )

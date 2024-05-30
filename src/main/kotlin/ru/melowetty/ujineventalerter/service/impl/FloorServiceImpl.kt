@@ -1,13 +1,17 @@
 package ru.melowetty.ujineventalerter.service.impl
 
 import jakarta.persistence.EntityNotFoundException
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.base64.Base64
 import org.springframework.stereotype.Service
+import ru.melowetty.ujineventalerter.dto.CameraShortDto
 import ru.melowetty.ujineventalerter.dto.FloorDto
 import ru.melowetty.ujineventalerter.dto.FloorShortDto
+import ru.melowetty.ujineventalerter.entity.Camera
 import ru.melowetty.ujineventalerter.entity.Floor
 import ru.melowetty.ujineventalerter.mapper.BuildingMapper
 import ru.melowetty.ujineventalerter.repository.BuildingRepository
 import ru.melowetty.ujineventalerter.repository.FloorRepository
+import ru.melowetty.ujineventalerter.service.CameraService
 import ru.melowetty.ujineventalerter.service.FloorService
 
 @Service
@@ -32,18 +36,23 @@ class FloorServiceImpl(
             number = number,
             building = building,
             isOutside = isOutside,
+            cameras = listOf()
         )
         val created = floorRepository.save(floor)
         return toDto(created)
     }
 
     private fun toDto(floor: Floor): FloorDto {
+        val streetPlan = "data:image/jpeg;base64," + Base64.toBase64String(this.javaClass.classLoader.getResourceAsStream("plans/street.jpg")!!.readAllBytes())
+        val basePlan = "data:image/jpeg;base64," + Base64.toBase64String(this.javaClass.classLoader.getResourceAsStream("plans/base.jpg")!!.readAllBytes())
         return FloorDto(
             id = floor.id,
             number = floor.number,
             building = buildingMapper.toDto(floor.building),
             name = floor.name,
             isOutside = floor.isOutside,
+            planBase64 = if(floor.isOutside) streetPlan else basePlan,
+            cameras = floor.cameras.map { toShortDto(camera = it) }
         )
     }
 
@@ -54,6 +63,15 @@ class FloorServiceImpl(
             name = floor.name,
             number = floor.number,
             isOutside = floor.isOutside,
+        )
+    }
+
+    private fun toShortDto(camera: Camera): CameraShortDto {
+        return CameraShortDto(
+            id = camera.id,
+            x = camera.x,
+            y = camera.y,
+            name = camera.name,
         )
     }
 }

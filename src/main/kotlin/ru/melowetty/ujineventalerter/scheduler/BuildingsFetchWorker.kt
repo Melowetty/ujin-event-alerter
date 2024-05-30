@@ -1,11 +1,13 @@
 package ru.melowetty.ujineventalerter.scheduler
 
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.base64.Base64
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import ru.melowetty.ujineventalerter.service.BuildingService
 import ru.melowetty.ujineventalerter.service.FloorService
 import ru.melowetty.ujineventalerter.service.UjinApiService
+import java.nio.file.Path
 
 @Component
 class BuildingsFetchWorker(
