@@ -6,8 +6,9 @@ import java.time.LocalDateTime
 data class EventShortDto(
     val id: Long,
     val type: EventType,
-    val data: Any,
+    val data: Any?,
     val cameraId: Long,
+    val description: String,
     val startTime: LocalDateTime,
-    val endTime: LocalDateTime?
+    val endTime: LocalDateTime?,
 )

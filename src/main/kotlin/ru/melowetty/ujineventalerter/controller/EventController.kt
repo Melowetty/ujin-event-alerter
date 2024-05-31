@@ -13,7 +13,7 @@ class EventController(
     private val eventService: EventService
 ) {
     @GetMapping
-    fun getEventsByCamera(@RequestParam floorId: Long, @RequestParam isOnlyActiveEvents: Boolean = true): List<EventShortDto> {
+    fun getEventsByFloor(@RequestParam floorId: Long, @RequestParam isOnlyActiveEvents: Boolean = true): List<EventShortDto> {
         return eventService.getEventsByFloor(floorId, isOnlyActiveEvents = true)
     }
 }

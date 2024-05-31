@@ -11,12 +11,13 @@ data class Event(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long,
-    val externalId: Long,
     @ManyToOne(cascade = [CascadeType.REMOVE])
     @OnDelete(action = OnDeleteAction.CASCADE)
     val camera: Camera,
+    val description: String,
     @Enumerated(value = EnumType.STRING)
     val type: EventType,
     val startDateTime: LocalDateTime,
-    val endDateTime: LocalDateTime?
+    val endDateTime: LocalDateTime?,
+    val data: String? = null
 )

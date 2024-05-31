@@ -1,5 +1,6 @@
 package ru.melowetty.ujineventalerter.service.impl
 
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
 import org.springframework.http.HttpEntity
@@ -12,10 +13,12 @@ import org.springframework.web.util.UriComponentsBuilder
 import ru.melowetty.ujineventalerter.model.AvailableCamera
 import ru.melowetty.ujineventalerter.service.MacroscopApiService
 import ru.melowetty.ujineventalerter.service.impl.response.MacroscopCamerasResponse
+import ru.melowetty.ujineventalerter.service.impl.response.MacroscropEventsResponse
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.net.URL
 import java.net.URLConnection
+import java.time.Duration
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -55,7 +58,6 @@ class MacroscopApiServiceImpl(
             id = it.id,
             name = it.name,
         ) }
-
     }
 
     override fun getImageFromCamera(id: String): String {
@@ -70,6 +72,38 @@ class MacroscopApiServiceImpl(
             .toUriString()
         return getByteArrayFromImageURL(urlTemplate)
             ?: throw RuntimeException("Произошла ошибка во время получения изображения с камеры")
+    }
+
+    override fun getEvents(eventId: String): MacroscropEventsResponse {
+        val url = "${BASE_URL}/event"
+
+        val restTemplate = RestTemplateBuilder()
+            .setConnectTimeout(Duration.ofSeconds(5))
+            .setReadTimeout(Duration.ofSeconds(10))
+            .build()
+
+        val headers = HttpHeaders()
+        headers.contentType = MediaType.APPLICATION_JSON
+        headers.accept = listOf(MediaType.APPLICATION_JSON)
+
+        val urlTemplate = UriComponentsBuilder.fromHttpUrl(url)
+            .queryParam("login", MACROSCROP_LOGIN)
+            .queryParam("password", MACROSCROP_PASSWORD)
+            .queryParam("responsetype", "json")
+            .queryParam("filter", eventId)
+            .encode()
+            .toUriString()
+
+        val entity = HttpEntity(null, headers)
+
+        val response = restTemplate.exchange(
+            urlTemplate,
+            HttpMethod.GET,
+            entity,
+            Array<MacroscropEventsResponse>::class.java
+        ).body!!
+
+        return response[0]
     }
 
     @OptIn(ExperimentalEncodingApi::class)
