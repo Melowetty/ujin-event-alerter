@@ -125,14 +125,13 @@ class UjinApiServiceImpl(
 
         val entity = HttpEntity(requestBody, headers)
 
-        val response = restTemplate.exchange(url, HttpMethod.POST, entity, String::class.java).body!!
-//        if(response.error == 1) {
-//            token = auth()
-//            return getIncidentClosed(topicId)
-//        }
-//
-//        return response.data.ticket.status.lowercase() in FINISH_STATES
-        return true
+        val response = restTemplate.exchange(url, HttpMethod.POST, entity, UjinTopicGetResponse::class.java).body!!
+        if(response.error == 1) {
+            token = auth()
+            return getIncidentClosed(topicId)
+        }
+
+        return FINISH_STATES.contains(response.data.ticket.status.lowercase())
     }
 
     private fun auth(): String {

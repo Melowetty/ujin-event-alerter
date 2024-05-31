@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 LABEL authors="denismalinin"
 
-FROM gradle: AS TEMP_BUILD_IMAGE
+FROM gradle:8.4.0-jdk17-alpine AS TEMP_BUILD_IMAGE
 
 WORKDIR /home/gradle/project
 

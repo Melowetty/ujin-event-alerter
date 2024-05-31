@@ -1,0 +1,47 @@
+version: '3.8'
+services:
+  ujin-event-alerter:
+    image: melowetty/ujin-event-alerter
+    depends_on:
+      - postgresdb
+    build:
+      context: /ujin-event-alerter .
+      dockerfile: Dockerfile
+    volumes:
+      - ./build:/home/gradle/project/build
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+    env_file: ./.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=$ACTIVE_PROFILE
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:$POSTGRESDB_DOCKER_PORT/$DB_NAME
+      - SPRING_DATASOURCE_USERNAME=$DB_USERNAME
+      - SPRING_DATASOURCE_PASSWORD=$DB_PASSWORD
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - APP_UJIN_LOGIN=$UJIN_LOGIN
+      - APP_UJIN_PASSWORD=$UJIN_PASSWORD
+      - APP_MACROSCOP_LOGIN=$MACROSCOP_LOGIN
+      - APP_MACROSCOP_PASSWORD=$MACROSCOP_PASSWORD
+      - SERVER_PORT=$SPRING_LOCAL_PORT
+    restart: always
+  ujin-event-checker-service:
+    image: melowetty/ujin-event-checker-service
+    build:
+      context: /ujin-event-checker-service .
+      dockerfile: Dockerfile
+    restart: always
+  postgresdb:
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+    ports:
+      - $POSTGRESDB_LOCAL_PORT:$POSTGRESDB_DOCKER_PORT
+    volumes:
+      - db:/var/lib/postgres
+volumes:
+  db:
+
