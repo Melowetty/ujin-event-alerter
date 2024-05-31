@@ -13,5 +13,5 @@ data class EventTask(
     val id: Long,
     @OneToOne
     val event: Event,
-    val ticketId: String,
+    val ticketId: Long,
 )
