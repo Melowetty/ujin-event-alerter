@@ -67,7 +67,7 @@ class UjinApiServiceImpl(
         headers.contentType = MediaType.APPLICATION_JSON
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
-        val url = "$BASE_UJIN_URL/v1/tck/bms/tickets/create/"
+        val url = "$BASE_UJIN_URL/v1/tck/bms/tickets/create?token=$token"
 
         val requestBody = mapOf(
             "title" to eventType.title,
@@ -107,7 +107,7 @@ class UjinApiServiceImpl(
         headers.contentType = MediaType.APPLICATION_JSON
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
-        val url = "$BASE_UJIN_URL/v1/tck/bms/tickets/item/"
+        val url = "$BASE_UJIN_URL/v1/tck/bms/tickets/item?token=$token"
 
         val requestBody = mapOf(
             "ticket" to mapOf(
