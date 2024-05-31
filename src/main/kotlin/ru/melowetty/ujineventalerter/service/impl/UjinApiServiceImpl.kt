@@ -1,5 +1,8 @@
 package ru.melowetty.ujineventalerter.service.impl
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.core.env.Environment
 import org.springframework.core.env.get
 import org.springframework.http.HttpEntity
@@ -18,7 +21,8 @@ import ru.melowetty.ujineventalerter.service.impl.response.UjinTopicGetResponse
 
 @Service
 class UjinApiServiceImpl(
-    private val env: Environment
+    private val env: Environment,
+    private val objectMapper: ObjectMapper,
 ): UjinApiService {
     private val UJIN_LOGIN = env["app.ujin.login"] ?: ""
     private val UJIN_PASSWORD = env["app.ujin.password"] ?: ""
@@ -60,7 +64,7 @@ class UjinApiServiceImpl(
         }
     }
 
-    override fun createIncident(buildingId: Long, eventType: EventType, description: String): Long {
+    override fun createIncident(buildingIdExternal: Long, eventType: EventType, description: String): Long {
         val restTemplate = RestTemplate()
 
         val headers = HttpHeaders()
@@ -69,33 +73,36 @@ class UjinApiServiceImpl(
 
         val url = "$BASE_UJIN_URL/v1/tck/bms/tickets/create?token=$token"
 
-        val requestBody = mapOf(
-            "title" to eventType.title,
-            "description" to description,
-            "priority" to "high",
-            "class" to "inspection",
-            "status" to "new",
-            "initiator.id" to 1,
-            "types" to listOf<Void>(),
-            "assignees" to listOf<Void>(),
-            "contracting_companies" to listOf<Void>(),
-            "objects" to mapOf(
-                "type" to "building",
-                "id" to buildingId,
-            ),
-            "planned_start_at" to null,
-            "planned_end_at" to null,
-            "hide_planned_at_from_resident" to null,
-            "extra" to null,
-
-        )
+        val requestBody = jsonStringToMapWithJackson("""
+            {
+              "title": "${eventType.title}",
+              "description": "${description}",
+              "priority": "high",
+              "class": "inspection",
+              "status": "new",
+              "initiator.id": 1,
+              "types": [${if(eventType.getTypes().size > 0) eventType.getTypes().first() else ""}],
+              "assignees": [],
+              "contracting_companies": [],
+              "objects": [
+                {
+                  "type": "building",
+                   "id": ${buildingIdExternal}
+                }
+              ],
+              "planned_start_at": null,
+              "planned_end_at": null,
+              "hide_planned_at_from_resident": null,
+              "extra": null
+            }
+        """.trimIndent())
 
         val entity = HttpEntity(requestBody, headers)
 
         val response = restTemplate.exchange(url, HttpMethod.POST, entity, UjinTopicCreateResponse::class.java).body!!
         if(response.error == 1) {
             token = auth()
-            return createIncident(buildingId, eventType, description)
+            return createIncident(buildingIdExternal, eventType, description)
         }
         return response.data.ticket.id
     }
@@ -108,22 +115,24 @@ class UjinApiServiceImpl(
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
         val url = "$BASE_UJIN_URL/v1/tck/bms/tickets/item?token=$token"
-
-        val requestBody = mapOf(
-            "ticket" to mapOf(
-                "id" to topicId,
-            )
-        )
+        val requestBody = jsonStringToMapWithJackson("""
+            {
+              "ticket": {
+                "id": ${topicId} 
+              }
+            }
+        """.trimIndent())
 
         val entity = HttpEntity(requestBody, headers)
 
-        val response = restTemplate.exchange(url, HttpMethod.POST, entity, UjinTopicGetResponse::class.java).body!!
-        if(response.error == 1) {
-            token = auth()
-            return getIncidentClosed(topicId)
-        }
-
-        return response.data.ticket.status.lowercase() in FINISH_STATES
+        val response = restTemplate.exchange(url, HttpMethod.POST, entity, String::class.java).body!!
+//        if(response.error == 1) {
+//            token = auth()
+//            return getIncidentClosed(topicId)
+//        }
+//
+//        return response.data.ticket.status.lowercase() in FINISH_STATES
+        return true
     }
 
     private fun auth(): String {
@@ -145,4 +154,8 @@ class UjinApiServiceImpl(
         return response.data.user.token
     }
 
+    fun jsonStringToMapWithJackson(json: String): Map<String, Any> {
+        val objectMapper = jacksonObjectMapper()
+        return objectMapper.readValue<Map<String, Any>>(json)
+    }
 }

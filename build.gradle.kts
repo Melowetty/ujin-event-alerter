@@ -27,6 +27,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0-RC")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -40,4 +41,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    archiveFileName.set("app.jar")
+}
+
+tasks.bootJar {
+    archiveFileName.set("app-standalone.jar")
 }

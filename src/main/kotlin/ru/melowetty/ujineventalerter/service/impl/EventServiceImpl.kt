@@ -46,7 +46,7 @@ class EventServiceImpl(
                 id = 0L,
                 event = event,
                 ticketId = ujinApiService.createIncident(
-                    buildingId = camera.floor.building.id, eventType = eventType, description = description)
+                    buildingId = camera.floor.building.externalId, eventType = eventType, description = description)
             )
             eventRepository.save(event)
             eventTaskRepository.save(eventTask)

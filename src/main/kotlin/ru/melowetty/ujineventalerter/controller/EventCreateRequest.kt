@@ -1,6 +1,7 @@
 package ru.melowetty.ujineventalerter.controller
 
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import ru.melowetty.ujineventalerter.model.EventType
@@ -14,7 +15,7 @@ class EventCreateRequest(
     private val eventService: EventService
 ) {
     @PostMapping
-    fun addEvent(data: Map<String, Any>) {
+    fun addEvent(@RequestBody data: Map<String, Any>) {
         val type = EventType.entries.find { it.eventId == data["EventId"].toString()} ?: return
         val cameraId = data["ChannelId"].toString()
         val time = data["Timestamp"].toString()

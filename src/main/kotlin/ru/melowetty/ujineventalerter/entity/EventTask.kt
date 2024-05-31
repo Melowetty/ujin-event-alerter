@@ -1,10 +1,6 @@
 package ru.melowetty.ujineventalerter.entity
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToOne
+import jakarta.persistence.*
 
 @Entity
 data class EventTask(
@@ -13,5 +9,6 @@ data class EventTask(
     val id: Long,
     @OneToOne
     val event: Event,
+    @Column(unique = true)
     val ticketId: Long,
 )

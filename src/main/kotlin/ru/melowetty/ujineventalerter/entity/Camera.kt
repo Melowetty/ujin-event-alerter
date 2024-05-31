@@ -9,6 +9,7 @@ data class Camera(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     val id: Long,
+    @Column(unique = true)
     val externalId: String,
     val name: String,
     val x: Float,
