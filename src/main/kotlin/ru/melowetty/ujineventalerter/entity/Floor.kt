@@ -18,6 +18,6 @@ data class Floor(
     val name: String?,
     val number: Int,
     val isOutside: Boolean = false,
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "floor")
     val cameras: List<Camera>
 )

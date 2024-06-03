@@ -1,12 +1,9 @@
 package ru.melowetty.ujineventalerter.scheduler
 
-import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import ru.melowetty.ujineventalerter.model.EventType
 import ru.melowetty.ujineventalerter.repository.EventRepository
 import ru.melowetty.ujineventalerter.repository.EventTaskRepository
-import ru.melowetty.ujineventalerter.service.MacroscopApiService
 import ru.melowetty.ujineventalerter.service.UjinApiService
 import java.time.LocalDateTime
 
